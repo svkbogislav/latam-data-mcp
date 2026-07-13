@@ -1,0 +1,17 @@
+LICENSE
+README.md
+pyproject.toml
+server.py
+latam_data/__init__.py
+latam_data/apis.py
+latam_data/validators.py
+latam_data_mcp.egg-info/PKG-INFO
+latam_data_mcp.egg-info/SOURCES.txt
+latam_data_mcp.egg-info/dependency_links.txt
+latam_data_mcp.egg-info/entry_points.txt
+latam_data_mcp.egg-info/requires.txt
+latam_data_mcp.egg-info/top_level.txt
+tests/test_hardening.py
+tests/test_live_apis.py
+tests/test_mcp_layer.py
+tests/test_validators.py
