@@ -10,7 +10,7 @@ for 12 countries, live economic indicators, exchange rates (including
 Argentina's blue rate and Colombia's legally binding TRM), Brazilian
 company lookups, holidays, and business-day math.
 
-## Tools (17)
+## Tools (19)
 
 ### Identity, banking & companies
 
@@ -31,6 +31,8 @@ company lookups, holidays, and business-day math.
 | `argentina_exchange_rates` | Official vs **blue** rate for USD/EUR. |
 | `brazil_market_rates` | SELIC, CDI, IPCA. |
 | `colombia_official_trm` | The legally binding USD/COP rate with validity dates. |
+| `brazil_historical_series` | Historical SELIC/CDI/IPCA/USD over a date range, with min/max/avg/change — for trend analysis and backtesting. |
+| `colombia_trm_history` | Historical USD/COP (TRM) over a date range. |
 | `costa_rica_exchange_rate` | 🇨🇷 official USD/EUR colón rate. |
 | `currency_convert` | Convert any amount between two currencies at the live rate. |
 | `latam_exchange_rates` | All 18 LatAm currencies vs USD in one call. |

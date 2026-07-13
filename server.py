@@ -216,6 +216,46 @@ async def brazil_company_lookup(cnpj: str) -> dict:
 # ---------------------------------------------------------------------------
 
 @mcp.tool
+async def brazil_historical_series(series: str, start_date: str, end_date: str) -> dict:
+    """Get a historical time series of a Brazilian indicator over a date range.
+
+    `series` is one of: SELIC (policy rate), CDI, IPCA (inflation), USD (PTAX
+    BRL per USD). Dates are ISO (YYYY-MM-DD). Returns every data point plus a
+    summary (min, max, average, first, last, change) — for trend analysis,
+    indexation, and FX backtesting. Source: Banco Central do Brasil (SGS).
+    """
+    key = series.strip().upper()
+    if key not in apis.BCB_SERIES:
+        return {"error": f"unknown series '{series}'",
+                "supported": sorted(apis.BCB_SERIES.keys())}
+    try:
+        date.fromisoformat(start_date); date.fromisoformat(end_date)
+    except ValueError as exc:
+        return {"error": f"invalid date: {exc}"}
+    try:
+        return await apis.brazil_series(key, start_date, end_date)
+    except httpx.HTTPError as exc:
+        return _api_error(exc, "BCB SGS")
+
+
+@mcp.tool
+async def colombia_trm_history(start_date: str, end_date: str) -> dict:
+    """Get Colombia's official TRM (USD/COP) history over a date range.
+
+    Dates are ISO (YYYY-MM-DD). Returns each daily TRM plus a summary
+    (min, max, average, change). Source: datos.gov.co (Superfinanciera).
+    """
+    try:
+        date.fromisoformat(start_date); date.fromisoformat(end_date)
+    except ValueError as exc:
+        return {"error": f"invalid date: {exc}"}
+    try:
+        return await apis.colombia_trm_history(start_date, end_date)
+    except (httpx.HTTPError, ValueError, KeyError) as exc:
+        return _api_error(exc, "datos.gov.co")
+
+
+@mcp.tool
 async def colombia_official_trm() -> dict:
     """Get Colombia's official TRM (Tasa Representativa del Mercado), USD to COP.
 

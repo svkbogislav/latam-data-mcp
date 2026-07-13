@@ -68,6 +68,23 @@ async def test_next_holidays_live():
     assert len(data["upcoming"]) >= 1
 
 
+async def test_brazil_historical_series_live():
+    data = await call("brazil_historical_series",
+                      {"series": "USD", "start_date": "2026-07-01", "end_date": "2026-07-10"})
+    assert len(data["points"]) >= 5
+    assert data["summary"]["min"] > 0
+    bad = await call("brazil_historical_series",
+                     {"series": "NOPE", "start_date": "2026-07-01", "end_date": "2026-07-10"})
+    assert "error" in bad
+
+
+async def test_colombia_trm_history_live():
+    data = await call("colombia_trm_history",
+                      {"start_date": "2026-06-01", "end_date": "2026-06-30"})
+    assert len(data["points"]) >= 10
+    assert data["summary"]["avg"] > 1000
+
+
 async def test_brazil_bank_lookup_live():
     data = await call("brazil_bank_lookup", {"code": "1"})
     assert "BANCO DO BRASIL" in (data.get("full_name") or "").upper()

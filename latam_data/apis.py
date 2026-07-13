@@ -93,6 +93,45 @@ async def brazil_rates() -> list[dict]:
     return [{"name": r["nome"], "annual_pct": r["valor"]} for r in data]
 
 
+BCB_SERIES = {"SELIC": 11, "CDI": 12, "IPCA": 433, "USD": 1}
+
+
+def _iso_to_br(iso: str) -> str:
+    y, m, d = iso.split("-")
+    return f"{d}/{m}/{y}"
+
+
+def _summarize(values: list[float]) -> dict:
+    if not values:
+        return {}
+    return {"count": len(values), "min": min(values), "max": max(values),
+            "avg": round(sum(values) / len(values), 6),
+            "first": values[0], "last": values[-1],
+            "change": round(values[-1] - values[0], 6)}
+
+
+async def brazil_series(series: str, start_iso: str, end_iso: str) -> dict:
+    sid = BCB_SERIES[series]
+    url = (f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.{sid}/dados?formato=json"
+           f"&dataInicial={_iso_to_br(start_iso)}&dataFinal={_iso_to_br(end_iso)}")
+    data = await _get_json(url)
+    points = []
+    for row in data or []:
+        d, m, y = row["data"].split("/")
+        points.append({"date": f"{y}-{m}-{d}", "value": float(row["valor"])})
+    return {"series": series, "points": points,
+            "summary": _summarize([p["value"] for p in points])}
+
+
+async def colombia_trm_history(start_iso: str, end_iso: str) -> dict:
+    url = ("https://www.datos.gov.co/resource/32sa-8pi3.json?$limit=5000&$order=vigenciadesde ASC"
+           f"&$where=vigenciadesde >= '{start_iso}T00:00:00' AND vigenciadesde <= '{end_iso}T23:59:59'")
+    data = await _get_json(url)
+    points = [{"date": r["vigenciadesde"][:10], "value": float(r["valor"])} for r in (data or [])]
+    return {"series": "USD/COP (official TRM)", "points": points,
+            "summary": _summarize([p["value"] for p in points])}
+
+
 async def brazil_bank(code: str) -> dict:
     data = await _get_json(f"https://brasilapi.com.br/api/banks/v1/{code}")
     return {"compe_code": data.get("code"), "ispb": data.get("ispb"),
