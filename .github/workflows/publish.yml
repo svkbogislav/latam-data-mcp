@@ -1,7 +1,9 @@
-name: Publish to PyPI
+name: Publish
 
-# Publishes the package to PyPI whenever a GitHub Release is published.
-# Uses PyPI Trusted Publishing (OIDC) — no API tokens or secrets required.
+# On each published GitHub Release (or manual dispatch):
+#   1. build + upload the package to PyPI  (Trusted Publishing, OIDC)
+#   2. publish server.json to the official MCP Registry  (GitHub OIDC)
+# No API tokens or secrets required — both steps authenticate via OIDC.
 
 on:
   release:
@@ -9,10 +11,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  publish:
+  pypi:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write        # required for trusted publishing
+      id-token: write        # required for PyPI trusted publishing
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -24,3 +26,21 @@ jobs:
           python -m build
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true   # safe to re-run for an already-published version
+
+  registry:
+    needs: pypi
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write        # required for MCP Registry GitHub OIDC auth
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install mcp-publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+      - name: Authenticate (GitHub OIDC)
+        run: ./mcp-publisher login github-oidc
+      - name: Publish to MCP Registry
+        run: ./mcp-publisher publish
