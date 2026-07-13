@@ -316,4 +316,13 @@ async def business_days(country: str, start_date: str, end_date: str) -> dict:
 
 
 if __name__ == "__main__":
-    mcp.run()
+    import os
+
+    # Dual-mode: hosting platforms (Render, Smithery, Fly, ...) set $PORT, which
+    # switches us to Streamable HTTP on all interfaces. With no $PORT we default
+    # to stdio, so `python server.py` works for local Claude Code / Cursor use.
+    port = os.environ.get("PORT")
+    if port:
+        mcp.run(transport="http", host="0.0.0.0", port=int(port))
+    else:
+        mcp.run()
