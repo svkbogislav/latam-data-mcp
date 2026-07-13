@@ -1,5 +1,7 @@
 # LatAm Data MCP
 
+<!-- mcpName: io.github.svkbogislav/latam-data-mcp -->
+
 The Latin American data layer your AI agent is missing.
 
 An MCP server that gives agents reliable access to LatAm data that is
