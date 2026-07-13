@@ -17,6 +17,8 @@ Dynamic: license-file
 
 # LatAm Data MCP
 
+<!-- mcpName: io.github.svkbogislav/latam-data-mcp -->
+
 The Latin American data layer your AI agent is missing.
 
 An MCP server that gives agents reliable access to LatAm data that is
@@ -53,24 +55,45 @@ company lookups, holidays, and business-day math.
 | `long_weekends` | Long weekends with bridge-day analysis. |
 | `business_days` | Working-day count between dates, holiday-aware — for SLA, payroll, logistics, settlement math. |
 
-## Quick start
+## Install (free — runs on your machine)
+
+No download or clone needed. Add this to your MCP client config — `uvx`
+fetches and runs the server straight from this repo:
+
+**Claude Desktop / Cursor / Claude Code** (`mcpServers` block):
+
+```json
+{
+  "mcpServers": {
+    "latam-data": {
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/svkbogislav/latam-data-mcp", "latam-data-mcp"]
+    }
+  }
+}
+```
+
+Or install it as a command:
+
+```bash
+uvx --from git+https://github.com/svkbogislav/latam-data-mcp latam-data-mcp
+# or:  pipx install git+https://github.com/svkbogislav/latam-data-mcp
+```
+
+Requires Python 3.10+. No API keys — every data source is free and public.
+
+## Hosted (managed) endpoint
+
+A always-on hosted instance is available at `https://latam-data.fastmcp.app/mcp`
+(Streamable HTTP, authenticated). Use this if you'd rather not run anything
+locally.
+
+## Develop
 
 ```bash
 python3.11 -m venv .venv
 .venv/bin/pip install -e ".[dev]"
-.venv/bin/python server.py                    # stdio transport
-```
-
-Use with Claude Code:
-
-```bash
-claude mcp add latam-data -- /path/to/.venv/bin/python /path/to/server.py
-```
-
-Remote (HTTP) transport:
-
-```bash
-.venv/bin/python -c "from server import mcp; mcp.run(transport='http', host='0.0.0.0', port=8000)"
+.venv/bin/python server.py     # stdio; set PORT=8000 for Streamable HTTP
 ```
 
 ## Tests
