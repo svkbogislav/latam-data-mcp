@@ -8,13 +8,13 @@
     "source": "github",
     "id": "1299602334"
   },
-  "version": "0.5.0",
+  "version": "0.6.0",
   "packages": [
     {
       "registryType": "pypi",
       "registryBaseUrl": "https://pypi.org",
       "identifier": "latam-data-mcp",
-      "version": "0.5.0",
+      "version": "0.6.0",
       "runtimeHint": "uvx",
       "transport": {
         "type": "stdio"

@@ -7,7 +7,8 @@ from server import mcp
 
 EXPECTED_TOOLS = {
     "validate_tax_id", "validate_bank_account", "validate_pix_key",
-    "brazil_bank_lookup", "chile_indicators", "argentina_exchange_rates",
+    "validate_phone_number", "brazil_bank_lookup", "chile_indicators",
+    "argentina_exchange_rates",
     "brazil_market_rates", "brazil_company_lookup", "brazil_historical_series",
     "colombia_official_trm", "colombia_trm_history", "costa_rica_company_lookup",
     "costa_rica_exchange_rate", "currency_convert", "latam_exchange_rates",

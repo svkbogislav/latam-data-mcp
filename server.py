@@ -15,6 +15,7 @@ from fastmcp import FastMCP
 
 from latam_data import apis
 from latam_data.bank import BANK_VALIDATORS, validate_pix_key as _validate_pix_key
+from latam_data.phone import COUNTRIES as PHONE_COUNTRIES, validate_phone as _validate_phone
 from latam_data.validators import VALIDATORS
 
 mcp = FastMCP(
@@ -154,6 +155,20 @@ async def brazil_market_rates() -> dict:
         return {"rates": await apis.brazil_rates()}
     except httpx.HTTPError as exc:
         return _api_error(exc, "BrasilAPI")
+
+
+@mcp.tool
+def validate_phone_number(country: str, number: str) -> dict:
+    """Validate and normalize a Latin American phone number.
+
+    `country` is an ISO 3166-1 alpha-2 code (15 supported: CL, AR, MX, BR, CO,
+    PE, UY, EC, PY, VE, GT, DO, PA, CR, BO). Accepts input with or without
+    country code, spaces, dashes or parentheses. Returns validity, E.164 form,
+    a human-readable national format, and line type (mobile/landline) —
+    handling the tricky cases (Brazil's 9th digit, Mexico's 10-digit, Argentina's
+    mobile 9/15, Chile's 9-prefix). Ideal for WhatsApp, SMS/OTP and CRM hygiene.
+    """
+    return _validate_phone(country, number)
 
 
 @mcp.tool

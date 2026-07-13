@@ -10,7 +10,7 @@ for 12 countries, live economic indicators, exchange rates (including
 Argentina's blue rate and Colombia's legally binding TRM), Brazilian
 company lookups, holidays, and business-day math.
 
-## Tools (19)
+## Tools (20)
 
 ### Identity, banking & companies
 
@@ -19,6 +19,7 @@ company lookups, holidays, and business-day math.
 | `validate_tax_id` | Validates national tax IDs with real check-digit math for **15 countries**: 🇨🇱 RUT, 🇦🇷 CUIT/CUIL, 🇲🇽 RFC, 🇧🇷 CPF/CNPJ (incl. 2026 alphanumeric CNPJs), 🇨🇴 NIT, 🇵🇪 RUC, 🇺🇾 RUT, 🇪🇨 cédula/RUC, 🇵🇾 RUC, 🇻🇪 RIF, 🇬🇹 NIT, 🇩🇴 RNC, 🇵🇦 RUC+DV, 🇨🇷 cédula, 🇧🇴 NIT. Returns canonical formatting and person/company/public-entity detection. |
 | `validate_bank_account` | Validates interbank account codes with check-digit math: 🇲🇽 CLABE (18-digit), 🇦🇷 CBU/CVU (22-digit, incl. Mercado Pago virtual accounts). Decodes bank, branch and account — verify a payout destination before sending money. |
 | `validate_pix_key` | Validates a 🇧🇷 PIX key (CPF, CNPJ, e-mail, +55 phone, or random UUID) and detects its type — CPF/CNPJ with full check-digit math. |
+| `validate_phone_number` | Validates & normalizes phone numbers for 15 countries → E.164, national format, mobile/landline detection. Handles Brazil's 9th digit, Mexico's 10-digit, Argentina's 9/15, Chile's 9-prefix. |
 | `brazil_bank_lookup` | Resolves a 🇧🇷 bank by COMPE code (name, ISPB). |
 | `brazil_company_lookup` | Full federal-registry data for any Brazilian company by CNPJ: legal name, status, size, main activity, capital, address, partners. |
 | `costa_rica_company_lookup` | 🇨🇷 taxpayer by cédula: name, regime, activities, and **compliance status** (moroso/omiso) from Hacienda — for KYC/AML. |
