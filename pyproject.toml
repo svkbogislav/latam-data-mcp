@@ -1,6 +1,6 @@
 [project]
 name = "latam-data-mcp"
-version = "0.2.0"
+version = "0.2.1"
 description = "MCP server giving AI agents reliable access to Latin American data: tax-ID validation, indicators, FX, company lookups, holidays"
 readme = "README.md"
 license = { text = "MIT" }
