@@ -36,6 +36,11 @@ VALID = [
     ("GT", "576937-K"),
     ("GT", "7108-0"),
     ("DO", "1-01-85004-3"),
+    ("PA", "155628291-2-2016 DV 32"),   # company, DV verified
+    ("PA", "8-174-586 47"),             # natural person
+    ("CR", "3-101-687654"),             # cédula jurídica
+    ("CR", "112340567"),                # cédula física
+    ("BO", "1020190028"),               # NIT (format only)
 ]
 
 INVALID = [
@@ -65,6 +70,12 @@ INVALID = [
     ("GT", "8977112-0", "check digit"),
     ("DO", "101850042", "check digit"),
     ("DO", "10185004", "9 digits"),
+    ("PA", "155628291-2-2016 DV 33", "DV check digit"),
+    ("PA", "ABC-DEF", "3-5 dash-separated"),
+    ("CR", "3-500-123456", "class-3 subtype"),
+    ("CR", "12345678", "expected 9 digits"),
+    ("BO", "123456", "7-12 digits"),
+    ("BO", "0000000", "cannot be zero"),
 ]
 
 

@@ -93,6 +93,12 @@ async def brazil_rates() -> list[dict]:
     return [{"name": r["nome"], "annual_pct": r["valor"]} for r in data]
 
 
+async def brazil_bank(code: str) -> dict:
+    data = await _get_json(f"https://brasilapi.com.br/api/banks/v1/{code}")
+    return {"compe_code": data.get("code"), "ispb": data.get("ispb"),
+            "name": data.get("name"), "full_name": data.get("fullName")}
+
+
 async def brazil_company(cnpj: str) -> dict:
     data = await _get_json(f"https://brasilapi.com.br/api/cnpj/v1/{cnpj}")
     partners = [

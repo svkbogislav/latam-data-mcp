@@ -350,6 +350,179 @@ def validate_rnc_do(value: str) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# Panama — RUC (+ two-digit DV check). Algorithm verified against 62 real RUCs
+# from the official DGI "Grandes Compradores" list.
+# ---------------------------------------------------------------------------
+
+_PA_ARRVAL = {
+    '00': '00', '10': '01', '11': '02', '12': '03', '13': '04', '14': '05',
+    '15': '06', '16': '07', '17': '08', '18': '09', '19': '01', '20': '02',
+    '21': '03', '22': '04', '23': '07', '24': '08', '25': '09', '26': '02',
+    '27': '03', '28': '04', '29': '05', '30': '06', '31': '07', '32': '08',
+    '33': '09', '34': '01', '35': '02', '36': '03', '37': '04', '38': '05',
+    '39': '06', '40': '07', '41': '08', '42': '09', '43': '01', '44': '02',
+    '45': '03', '46': '04', '47': '05', '48': '06', '49': '07',
+}
+
+
+def _pa_digit(sw: bool, ructb: str) -> int:
+    """One modulo-11 pass with ascending weights from the right."""
+    j, total = 2, 0
+    for c in reversed(ructb):
+        if sw and j == 12:
+            sw = False
+            j -= 1
+        total += j * (ord(c) - ord('0'))
+        j += 1
+    r = total % 11
+    return 11 - r if r > 1 else 0
+
+
+def _pa_calculate_dv(ruc: str) -> str:
+    """Return the 2-char DV for a dashed RUC, or '' if the RUC is malformed."""
+    rs = ruc.split('-')
+    if (len(rs) == 4 and rs[1] != 'NT') or len(rs) < 3 or len(rs) > 5:
+        return ''
+    sw = False
+    try:
+        if ruc[0] == 'E':
+            ructb = '0' * (4 - len(rs[1])) + '0000005' + '00' + '50' + '0' * (3 - len(rs[1])) + rs[1] + '0' * (5 - len(rs[2])) + rs[2]
+        elif rs[1] == 'NT':
+            ructb = '0' * (4 - len(rs[1])) + '0000005' + '00' * (2 - len(rs[0][:-2])) + rs[0][:-2] + '43' + '0' * (3 - len(rs[2])) + rs[2] + '0' * (5 - len(rs[3])) + rs[3]
+        elif rs[0][-2:] == 'AV':
+            ructb = '0' * (4 - len(rs[1])) + '0000005' + '00' * (2 - len(rs[0][:-2])) + rs[0][:-2] + '15' + '0' * (3 - len(rs[1])) + rs[1] + '0' * (5 - len(rs[2])) + rs[2]
+        elif rs[0][-2:] == 'PI':
+            ructb = '0' * (4 - len(rs[1])) + '0000005' + '00' * (2 - len(rs[0][:-2])) + rs[0][:-2] + '79' + '0' * (3 - len(rs[1])) + rs[1] + '0' * (5 - len(rs[2])) + rs[2]
+        elif rs[0] == 'PE':
+            ructb = '0' * (4 - len(rs[1])) + '0000005' + '00' + '75' + '0' * (3 - len(rs[1])) + rs[1] + '0' * (5 - len(rs[2])) + rs[2]
+        elif ruc[0] == 'N':
+            ructb = '0' * (4 - len(rs[1])) + '0000005' + '00' + '40' + '0' * (3 - len(rs[1])) + rs[1] + '0' * (5 - len(rs[2])) + rs[2]
+        elif 0 < len(rs[0]) <= 2:
+            ructb = '0' * (4 - len(rs[1])) + '0000005' + '0' * (2 - len(rs[0])) + rs[0] + '00' + '0' * (3 - len(rs[1])) + rs[1] + '0' * (5 - len(rs[2])) + rs[2]
+        else:
+            ructb = '0' * (10 - len(rs[0])) + rs[0] + '0' * (4 - len(rs[1])) + rs[1] + '0' * (6 - len(rs[2])) + rs[2]
+            sw = ructb[3] == '0' and ructb[4] == '0' and ructb[5] < '5'
+    except IndexError:
+        return ''
+    if not re.fullmatch(r"[0-9]+", ructb):
+        return ''
+    if sw:
+        ructb = ructb[:5] + _PA_ARRVAL.get(ructb[5:7], ructb[5:7]) + ructb[7:]
+    dv1 = _pa_digit(sw, ructb)
+    dv2 = _pa_digit(sw, ructb + chr(48 + dv1))
+    return '%d%d' % (dv1, dv2)
+
+
+def validate_ruc_pa(value: str) -> dict:
+    """Panama RUC. Accepts the RUC with its DV separated by whitespace or a
+    'DV' label, e.g. '155628291-2-2016 DV 32', '8-174-586 47', or the bare RUC.
+    The RUC keeps its internal dashes (they carry structural meaning)."""
+    up = value.strip().upper()
+    up = re.sub(r"^RUC[:\s]+", "", up)
+    dv_given = None
+    m = re.search(r"[\s-]*D\.?\s*V\.?\s*[:\-]?\s*([0-9]{1,2})\s*$", up)
+    if m:
+        dv_given = m.group(1)
+        up = up[:m.start()].strip()
+    else:
+        toks = up.split()
+        if len(toks) == 2 and re.fullmatch(r"[0-9]{1,2}", toks[1]):
+            dv_given, up = toks[1], toks[0]
+    ruc = up.replace(" ", "")
+    if not re.fullmatch(r"[0-9A-Z]+(?:-[0-9A-Z]+){2,4}", ruc):
+        return {"valid": False,
+                "reason": "RUC must be 3-5 dash-separated groups (e.g. 8-174-586 "
+                          "for a person or 155628291-2-2016 for a company)"}
+    dv = _pa_calculate_dv(ruc)
+    if not dv:
+        return {"valid": False, "reason": "unrecognized RUC structure"}
+    first = ruc.split('-')[0]
+    person = first[:1] in "EN" or first == "PE" or re.fullmatch(r"[0-9]{1,2}", first) is not None
+    entity = "person (natural)" if person else "company (juridical)"
+    formatted = f"{ruc} DV {dv}"
+    if dv_given is not None:
+        if int(dv_given) != int(dv):
+            return {"valid": False, "reason": f"DV check digit mismatch (expected {dv})"}
+        return {"valid": True, "formatted": formatted, "type": entity}
+    return {"valid": True, "formatted": formatted, "type": entity,
+            "dv": dv, "dv_verified": False,
+            "note": "no DV supplied to verify; the computed DV is shown in 'dv'"}
+
+
+# ---------------------------------------------------------------------------
+# Costa Rica — cédula (física / jurídica / DIMEX). No check digit; structure only.
+# ---------------------------------------------------------------------------
+
+_CR_CLASS3 = ('002', '003', '004', '005', '006', '007', '008', '009', '010',
+              '011', '012', '013', '014', '101', '102', '103', '104', '105',
+              '106', '107', '108', '109', '110')
+
+
+def validate_cedula_cr(value: str) -> dict:
+    clean = re.sub(r"[.\-\s]", "", value)
+    if not re.fullmatch(r"[0-9]+", clean):
+        return {"valid": False, "reason": "Costa Rica cédula must contain only digits"}
+    n = len(clean)
+    if n == 9:
+        if clean[0] == "0":
+            return {"valid": False, "reason": "9-digit cédula física cannot start with 0"}
+        return {"valid": True, "formatted": f"{clean[0]}-{clean[1:5]}-{clean[5:9]}",
+                "type": "person (cédula física)", "id_type": "cédula física",
+                "check_digit_verified": False,
+                "note": "Costa Rica cédula física has no check digit; length and "
+                        "structure validated only"}
+    if n == 10:
+        if clean[0] in "2345":
+            if clean[0] == "2" and clean[1:4] not in ("100", "200", "300", "400"):
+                return {"valid": False, "reason": "invalid jurídica class-2 subtype"}
+            if clean[0] == "3" and clean[1:4] not in _CR_CLASS3:
+                return {"valid": False, "reason": "invalid jurídica class-3 subtype"}
+            if clean[0] == "4" and clean[1:4] != "000":
+                return {"valid": False, "reason": "invalid jurídica class-4 subtype"}
+            if clean[0] == "5" and clean[1:4] != "001":
+                return {"valid": False, "reason": "invalid jurídica class-5 subtype"}
+            return {"valid": True, "formatted": f"{clean[0]}-{clean[1:4]}-{clean[4:]}",
+                    "type": "company (cédula jurídica)", "id_type": "cédula jurídica",
+                    "check_digit_verified": False,
+                    "note": "structure validated per Registro Nacional class rules; "
+                            "cédula jurídica has no check digit"}
+        if clean[0] == "0":
+            return {"valid": True, "formatted": f"{clean[:2]}-{clean[2:6]}-{clean[6:]}",
+                    "type": "person (cédula física, 10-digit tax form)",
+                    "id_type": "cédula física", "check_digit_verified": False,
+                    "note": "10-digit DGT tax representation of a física cédula; no check digit"}
+        return {"valid": False,
+                "reason": "10-digit id must start with 0 (física tax form) or 2-5 (jurídica)"}
+    if n in (11, 12):
+        if int(clean) == 0:
+            return {"valid": False, "reason": "DIMEX cannot be all zeros"}
+        return {"valid": True, "formatted": clean,
+                "type": "foreign resident (DIMEX)", "id_type": "DIMEX",
+                "check_digit_verified": False,
+                "note": "DIMEX (foreigner residency id) is 11-12 digits with no check digit; "
+                        "length/format validated only"}
+    return {"valid": False,
+            "reason": "expected 9 digits (cédula física), 10 (cédula jurídica) "
+                      "or 11-12 (DIMEX)"}
+
+
+# ---------------------------------------------------------------------------
+# Bolivia — NIT. No public check-digit algorithm; format/length only.
+# ---------------------------------------------------------------------------
+
+def validate_nit_bo(value: str) -> dict:
+    clean = re.sub(r"[.\-\s]", "", value)
+    if not re.fullmatch(r"[0-9]{7,12}", clean):
+        return {"valid": False, "reason": "Bolivia NIT must be 7-12 digits"}
+    if int(clean) == 0:
+        return {"valid": False, "reason": "NIT cannot be zero"}
+    return {"valid": True, "formatted": clean, "type": "registered taxpayer (SIN)",
+            "check_digit_verified": False,
+            "note": "Bolivia NIT has no public check-digit algorithm (the trailing "
+                    "digit is randomly assigned); length/format validated only"}
+
+
+# ---------------------------------------------------------------------------
 # Registry
 # ---------------------------------------------------------------------------
 
@@ -366,4 +539,7 @@ VALIDATORS = {
     "VE": ("RIF", validate_rif_ve),
     "GT": ("NIT", validate_nit_gt),
     "DO": ("RNC", validate_rnc_do),
+    "PA": ("RUC", validate_ruc_pa),
+    "CR": ("Cédula", validate_cedula_cr),
+    "BO": ("NIT", validate_nit_bo),
 }

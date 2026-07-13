@@ -2,7 +2,7 @@
 
 import pytest
 
-from latam_data.bank import BANK_VALIDATORS
+from latam_data.bank import BANK_VALIDATORS, validate_pix_key
 
 
 def check(country: str, account: str) -> dict:
@@ -57,6 +57,29 @@ def test_cbu_structure_and_bank_name():
     assert r["bank_code"] == "285"
     assert r["bank_name"] == "Banco Macro"
     assert r["formatted"] == "28505909 40090418135201"
+
+
+PIX_VALID = [
+    ("+5511987654321", "phone"),
+    ("11144477735", "CPF"),
+    ("00.000.000/0001-91", "CNPJ"),
+    ("joao@example.com", "email"),
+    ("123e4567-e89b-42d3-a456-426614174000", "random (EVP)"),
+]
+
+PIX_INVALID = ["not-a-key", "11144477736", "+551198765", "bad@", "12345"]
+
+
+@pytest.mark.parametrize("key,ktype", PIX_VALID)
+def test_pix_key_valid(key, ktype):
+    r = validate_pix_key(key)
+    assert r["valid"], r.get("reason")
+    assert r["key_type"] == ktype
+
+
+@pytest.mark.parametrize("key", PIX_INVALID)
+def test_pix_key_invalid(key):
+    assert not validate_pix_key(key)["valid"]
 
 
 def test_unknown_bank_code_still_valid():

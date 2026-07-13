@@ -10,15 +10,18 @@ for 12 countries, live economic indicators, exchange rates (including
 Argentina's blue rate and Colombia's legally binding TRM), Brazilian
 company lookups, holidays, and business-day math.
 
-## Tools (12)
+## Tools (17)
 
-### Identity & companies
+### Identity, banking & companies
 
 | Tool | What it does |
 |---|---|
-| `validate_tax_id` | Validates national tax IDs with real check-digit math for **12 countries**: 🇨🇱 RUT, 🇦🇷 CUIT/CUIL, 🇲🇽 RFC, 🇧🇷 CPF/CNPJ (incl. 2026 alphanumeric CNPJs), 🇨🇴 NIT, 🇵🇪 RUC, 🇺🇾 RUT, 🇪🇨 cédula/RUC, 🇵🇾 RUC, 🇻🇪 RIF, 🇬🇹 NIT, 🇩🇴 RNC. Returns canonical formatting and person/company/public-entity detection. |
+| `validate_tax_id` | Validates national tax IDs with real check-digit math for **15 countries**: 🇨🇱 RUT, 🇦🇷 CUIT/CUIL, 🇲🇽 RFC, 🇧🇷 CPF/CNPJ (incl. 2026 alphanumeric CNPJs), 🇨🇴 NIT, 🇵🇪 RUC, 🇺🇾 RUT, 🇪🇨 cédula/RUC, 🇵🇾 RUC, 🇻🇪 RIF, 🇬🇹 NIT, 🇩🇴 RNC, 🇵🇦 RUC+DV, 🇨🇷 cédula, 🇧🇴 NIT. Returns canonical formatting and person/company/public-entity detection. |
 | `validate_bank_account` | Validates interbank account codes with check-digit math: 🇲🇽 CLABE (18-digit), 🇦🇷 CBU/CVU (22-digit, incl. Mercado Pago virtual accounts). Decodes bank, branch and account — verify a payout destination before sending money. |
+| `validate_pix_key` | Validates a 🇧🇷 PIX key (CPF, CNPJ, e-mail, +55 phone, or random UUID) and detects its type — CPF/CNPJ with full check-digit math. |
+| `brazil_bank_lookup` | Resolves a 🇧🇷 bank by COMPE code (name, ISPB). |
 | `brazil_company_lookup` | Full federal-registry data for any Brazilian company by CNPJ: legal name, status, size, main activity, capital, address, partners. |
+| `costa_rica_company_lookup` | 🇨🇷 taxpayer by cédula: name, regime, activities, and **compliance status** (moroso/omiso) from Hacienda — for KYC/AML. |
 
 ### Money & markets
 
@@ -28,6 +31,8 @@ company lookups, holidays, and business-day math.
 | `argentina_exchange_rates` | Official vs **blue** rate for USD/EUR. |
 | `brazil_market_rates` | SELIC, CDI, IPCA. |
 | `colombia_official_trm` | The legally binding USD/COP rate with validity dates. |
+| `costa_rica_exchange_rate` | 🇨🇷 official USD/EUR colón rate. |
+| `currency_convert` | Convert any amount between two currencies at the live rate. |
 | `latam_exchange_rates` | All 18 LatAm currencies vs USD in one call. |
 
 ### Time & calendars

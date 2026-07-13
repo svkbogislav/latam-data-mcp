@@ -68,6 +68,13 @@ async def test_next_holidays_live():
     assert len(data["upcoming"]) >= 1
 
 
+async def test_brazil_bank_lookup_live():
+    data = await call("brazil_bank_lookup", {"code": "1"})
+    assert "BANCO DO BRASIL" in (data.get("full_name") or "").upper()
+    missing = await call("brazil_bank_lookup", {"code": "99999"})
+    assert "error" in missing
+
+
 async def test_costa_rica_company_live():
     data = await call("costa_rica_company_lookup", {"cedula": "3101002346"})
     assert data.get("name")

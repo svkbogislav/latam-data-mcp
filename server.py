@@ -14,7 +14,7 @@ import httpx
 from fastmcp import FastMCP
 
 from latam_data import apis
-from latam_data.bank import BANK_VALIDATORS
+from latam_data.bank import BANK_VALIDATORS, validate_pix_key as _validate_pix_key
 from latam_data.validators import VALIDATORS
 
 mcp = FastMCP(
@@ -54,7 +54,8 @@ def validate_tax_id(country: str, tax_id: str) -> dict:
     Supported countries (ISO 3166-1 alpha-2): CL (RUT), AR (CUIT/CUIL),
     MX (RFC), BR (CPF or CNPJ — auto-detected, including 2026 alphanumeric
     CNPJs), CO (NIT), PE (RUC), UY (RUT), EC (cédula or RUC — auto-detected),
-    PY (RUC), VE (RIF), GT (NIT), DO (RNC).
+    PY (RUC), VE (RIF), GT (NIT), DO (RNC), PA (RUC + DV), CR (cédula
+    física/jurídica/DIMEX — format only), BO (NIT — format only).
 
     Verifies the country's check digit where one is algorithmically
     verifiable. Exception: Mexico's RFC — SAT-issued RFCs deviate from the
@@ -151,6 +152,38 @@ async def brazil_market_rates() -> dict:
     """
     try:
         return {"rates": await apis.brazil_rates()}
+    except httpx.HTTPError as exc:
+        return _api_error(exc, "BrasilAPI")
+
+
+@mcp.tool
+def validate_pix_key(key: str) -> dict:
+    """Validate a Brazilian PIX key and detect its type.
+
+    PIX is Brazil's instant-payment rail. A key is one of: CPF (11 digits),
+    CNPJ (14 digits), e-mail, phone (E.164, +55…), or a random EVP (UUID v4).
+    CPF/CNPJ keys are validated with full check-digit math. Lets a payments
+    agent confirm a PIX key is well-formed before initiating a transfer.
+    """
+    return {"input": key, **_validate_pix_key(key)}
+
+
+@mcp.tool
+async def brazil_bank_lookup(code: str) -> dict:
+    """Look up a Brazilian bank by its COMPE code (e.g. 1 = Banco do Brasil, 341 = Itaú).
+
+    Returns the COMPE code, ISPB, short and full name. Useful to resolve the
+    institution behind a payment or a bank slip. Source: BrasilAPI.
+    """
+    clean = re.sub(r"\D", "", str(code))
+    if not clean:
+        return {"error": "code must be a numeric COMPE bank code"}
+    try:
+        return await apis.brazil_bank(clean)
+    except httpx.HTTPStatusError as exc:
+        if exc.response.status_code == 404:
+            return {"error": f"no bank with COMPE code {clean}"}
+        return _api_error(exc, "BrasilAPI")
     except httpx.HTTPError as exc:
         return _api_error(exc, "BrasilAPI")
 
