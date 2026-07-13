@@ -255,3 +255,33 @@ https://github.com/svkbogislav/latam-data-mcp
 ```
 
 _Nota: Keep the repo link in the last tweet (links in the first tweet can suppress reach). Honest, concrete, no 'revolutionary/game-changer' language. If you prefer Spanish for a LatAm-dev audience, the same 4-tweet structure translates directly._
+
+
+---
+
+# Directories — where to get listed
+
+## ✅ Done / automatic
+- **punkpeye/awesome-mcp-servers** — PR open: https://github.com/punkpeye/awesome-mcp-servers/pull/10033 (also syncs to Glama)
+- **glama.ai (Glama MCP registry)** — auto-crawls public GitHub MCP repos; should index automatically
+- **Official MCP Registry** — already published (io.github.svkbogislav/latam-data-mcp)
+
+## 🔗 1-click PR (branch already pushed — just open & click 'Create pull request')
+- **TensorBlock/awesome-mcp-servers** — https://github.com/TensorBlock/awesome-mcp-servers/compare/main...svkbogislav:add-latam-data-mcp?expand=1
+
+## 📝 Web forms (need your login)
+- **TensorBlock/awesome-mcp-servers (MCP Index)** — https://github.com/TensorBlock/awesome-mcp-servers/issues/new?template=add-mcp-server.yml
+- **wong2/awesome-mcp-servers** — https://mcpservers.org/submit')
+- **mcpservers.org** — https://mcpservers.org/submit
+- **mcp.so** — https://mcp.so/submit
+- **PulseMCP** — https://www.pulsemcp.com/submit
+- **MCP Market (mcpmarket.com)** — https://mcpmarket.com/submit
+- **mcp.directory** — https://mcp.directory/submit
+- **MCP Server Hub (mcpserverhub.net)** — https://mcpserverhub.net/submit
+
+## 🎫 GitHub issue (needs a 400x400 PNG logo first)
+- **Cline MCP Marketplace** — issue at https://github.com/cline/mcp-marketplace/issues/new (repo URL + 400x400 PNG logo + one-line reason). High value: one-click install for Cline users.
+
+## ❌ Closed / skip
+- **appcypher/awesome-mcp-servers**
+- **wong2/awesome-mcp-servers**
