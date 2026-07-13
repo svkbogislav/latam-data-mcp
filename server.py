@@ -14,6 +14,7 @@ import httpx
 from fastmcp import FastMCP
 
 from latam_data import apis
+from latam_data.bank import BANK_VALIDATORS
 from latam_data.validators import VALIDATORS
 
 mcp = FastMCP(
@@ -72,6 +73,26 @@ def validate_tax_id(country: str, tax_id: str) -> dict:
     result = validator(tax_id)
     return {"country": code, "id_type": result.pop("id_type", id_name),
             "input": tax_id, **result}
+
+
+@mcp.tool
+def validate_bank_account(country: str, account: str) -> dict:
+    """Validate a Latin American bank account / interbank code, check digit included.
+
+    Supported (ISO 3166-1 alpha-2): MX (CLABE, 18 digits), AR (CBU/CVU,
+    22 digits — CVU covers virtual accounts like Mercado Pago).
+    Returns validity, canonical formatting, and the decoded structure —
+    bank code and name, branch, and account number. Essential for fintech,
+    payouts, and payment-collection agents that must confirm an account is
+    well-formed before initiating a transfer.
+    """
+    code = country.strip().upper()
+    if code not in BANK_VALIDATORS:
+        return {"error": f"unsupported country '{country}'",
+                "supported": {c: name for c, (name, _) in BANK_VALIDATORS.items()}}
+    id_name, validator = BANK_VALIDATORS[code]
+    return {"country": code, "account_type": id_name, "input": account,
+            **validator(account)}
 
 
 # ---------------------------------------------------------------------------

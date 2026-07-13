@@ -10,13 +10,14 @@ for 12 countries, live economic indicators, exchange rates (including
 Argentina's blue rate and Colombia's legally binding TRM), Brazilian
 company lookups, holidays, and business-day math.
 
-## Tools (11)
+## Tools (12)
 
 ### Identity & companies
 
 | Tool | What it does |
 |---|---|
 | `validate_tax_id` | Validates national tax IDs with real check-digit math for **12 countries**: 🇨🇱 RUT, 🇦🇷 CUIT/CUIL, 🇲🇽 RFC, 🇧🇷 CPF/CNPJ (incl. 2026 alphanumeric CNPJs), 🇨🇴 NIT, 🇵🇪 RUC, 🇺🇾 RUT, 🇪🇨 cédula/RUC, 🇵🇾 RUC, 🇻🇪 RIF, 🇬🇹 NIT, 🇩🇴 RNC. Returns canonical formatting and person/company/public-entity detection. |
+| `validate_bank_account` | Validates interbank account codes with check-digit math: 🇲🇽 CLABE (18-digit), 🇦🇷 CBU/CVU (22-digit, incl. Mercado Pago virtual accounts). Decodes bank, branch and account — verify a payout destination before sending money. |
 | `brazil_company_lookup` | Full federal-registry data for any Brazilian company by CNPJ: legal name, status, size, main activity, capital, address, partners. |
 
 ### Money & markets
