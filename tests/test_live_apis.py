@@ -68,6 +68,24 @@ async def test_next_holidays_live():
     assert len(data["upcoming"]) >= 1
 
 
+async def test_costa_rica_company_live():
+    data = await call("costa_rica_company_lookup", {"cedula": "3101002346"})
+    assert data.get("name")
+    assert "delinquent" in data["status"]
+
+
+async def test_costa_rica_fx_live():
+    data = await call("costa_rica_exchange_rate", {})
+    assert data["usd_crc"]["sell"] > 100
+
+
+async def test_currency_convert_live():
+    data = await call("currency_convert", {"amount": 100, "from_currency": "USD", "to_currency": "CLP"})
+    assert data["converted"] > 1000  # 100 USD is many thousand CLP
+    bad = await call("currency_convert", {"amount": 1, "from_currency": "USD", "to_currency": "ZZZ"})
+    assert "error" in bad
+
+
 async def test_business_days_live():
     # January 2026 in Chile: 31 days, 22 weekdays, Jan 1 (Thu) is a holiday -> 21
     data = await call("business_days",

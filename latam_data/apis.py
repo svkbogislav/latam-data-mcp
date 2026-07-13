@@ -42,8 +42,8 @@ class EmptyResponseError(httpx.HTTPError):
         super().__init__(f"empty response body from {url}")
 
 
-async def _get_json(url: str) -> Any:
-    async with httpx.AsyncClient(timeout=20, headers={"User-Agent": USER_AGENT},
+async def _get_json(url: str, user_agent: str = USER_AGENT) -> Any:
+    async with httpx.AsyncClient(timeout=20, headers={"User-Agent": user_agent},
                                  follow_redirects=True) as client:
         resp = await client.get(url)
         resp.raise_for_status()
@@ -135,7 +135,51 @@ async def colombia_trm() -> dict:
     }
 
 
+# --- Costa Rica -----------------------------------------------------------------
+
+# Hacienda's WAF rejects browser-like and custom User-Agents (403) but allows curl.
+_CR_UA = "curl/8.4.0"
+
+
+async def costa_rica_company(cedula: str) -> dict:
+    data = await _get_json(f"https://api.hacienda.go.cr/fe/ae?identificacion={cedula}", _CR_UA)
+    situacion = data.get("situacion") or {}
+    return {
+        "id": cedula,
+        "name": data.get("nombre"),
+        "regime": (data.get("regimen") or {}).get("descripcion"),
+        "status": {
+            "delinquent": situacion.get("moroso"),
+            "non_filer": situacion.get("omiso"),
+            "state": situacion.get("estado"),
+            "tax_office": situacion.get("administracionTributaria"),
+        },
+        "activities": [
+            {"code": a.get("codigo"), "description": a.get("descripcion"),
+             "active": a.get("estado") == "A"}
+            for a in (data.get("actividades") or [])
+        ],
+    }
+
+
+async def costa_rica_fx() -> dict:
+    data = await _get_json("https://api.hacienda.go.cr/indicadores/tc", _CR_UA)
+    dolar = data.get("dolar") or {}
+    euro = data.get("euro") or {}
+    return {
+        "usd_crc": {"buy": (dolar.get("compra") or {}).get("valor"),
+                    "sell": (dolar.get("venta") or {}).get("valor"),
+                    "date": (dolar.get("venta") or {}).get("fecha")},
+        "eur_crc": {"value": euro.get("colones"), "date": euro.get("fecha")},
+    }
+
+
 # --- Regional FX -----------------------------------------------------------------
+
+async def usd_rates() -> dict:
+    data = await _get_json("https://open.er-api.com/v6/latest/USD")
+    return {"rates": data.get("rates", {}), "last_update": data.get("time_last_update_utc")}
+
 
 async def latam_fx() -> dict:
     data = await _get_json("https://open.er-api.com/v6/latest/USD")

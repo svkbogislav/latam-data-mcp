@@ -196,8 +196,77 @@ async def colombia_official_trm() -> dict:
 
 
 # ---------------------------------------------------------------------------
+# Costa Rica
+# ---------------------------------------------------------------------------
+
+@mcp.tool
+async def costa_rica_company_lookup(cedula: str) -> dict:
+    """Look up a Costa Rican taxpayer/company by cédula in the Hacienda registry.
+
+    Accepts a cédula física (9 digits), jurídica (10 digits) or DIMEX.
+    Returns legal name, tax regime, registered economic activities, and the
+    tax-compliance situation — `delinquent` (moroso), `non_filer` (omiso)
+    and registration `state` — which is valuable for KYC/AML and onboarding.
+    Source: Ministerio de Hacienda (official, no key).
+    """
+    clean = re.sub(r"[.\-\s]", "", cedula)
+    if not re.fullmatch(r"[0-9]{9,12}", clean):
+        return {"error": "cédula must be 9-12 digits"}
+    try:
+        return await apis.costa_rica_company(clean)
+    except httpx.HTTPStatusError as exc:
+        if exc.response.status_code in (404, 500):
+            return {"error": f"no taxpayer found for cédula {clean}"}
+        return _api_error(exc, "Hacienda CR")
+    except httpx.HTTPError as exc:
+        return _api_error(exc, "Hacienda CR")
+
+
+@mcp.tool
+async def costa_rica_exchange_rate() -> dict:
+    """Get Costa Rica's official USD and EUR exchange rates (colón, CRC).
+
+    Buy/sell for USD and the EUR reference, as certified by Hacienda —
+    used for invoicing and accounting in Costa Rica.
+    """
+    try:
+        return {"currency": "CRC", **await apis.costa_rica_fx()}
+    except httpx.HTTPError as exc:
+        return _api_error(exc, "Hacienda CR")
+
+
+# ---------------------------------------------------------------------------
 # Regional FX
 # ---------------------------------------------------------------------------
+
+@mcp.tool
+async def currency_convert(amount: float, from_currency: str, to_currency: str) -> dict:
+    """Convert an amount between any two currencies at the current rate.
+
+    Handy for pricing, invoicing and reporting across LatAm — e.g. convert
+    a Brazilian price to Chilean pesos. Uses live USD-based rates
+    (open.er-api.com); covers all LatAm currencies plus USD/EUR and most
+    world currencies. Currency codes are ISO 4217 (e.g. CLP, BRL, USD).
+    """
+    src = from_currency.strip().upper()
+    dst = to_currency.strip().upper()
+    try:
+        data = await apis.usd_rates()
+    except httpx.HTTPError as exc:
+        return _api_error(exc, "open.er-api.com")
+    rates = data["rates"]
+    missing = [c for c in (src, dst) if c not in rates]
+    if missing:
+        return {"error": f"unknown currency code(s): {', '.join(missing)}"}
+    # rates are units per 1 USD; go via USD
+    result = amount / rates[src] * rates[dst]
+    return {
+        "amount": amount, "from": src, "to": dst,
+        "converted": round(result, 4),
+        "rate": round(rates[dst] / rates[src], 6),
+        "last_update": data["last_update"],
+    }
+
 
 @mcp.tool
 async def latam_exchange_rates(currencies: list[str] | None = None) -> dict:
