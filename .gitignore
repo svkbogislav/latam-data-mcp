@@ -7,3 +7,5 @@ build/
 assets/social-preview@2x.png
 assets/banner@2x.png
 docs/MONETIZATION.md
+dashboard.html
+.metrics-history.jsonl
