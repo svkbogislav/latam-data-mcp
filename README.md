@@ -83,9 +83,11 @@ their own instance, a **managed hosted tier** is in the works:
 
 - Always-on hosted endpoint — no self-hosting or ops
 - Higher rate limits, caching and upstream failover
-- **Premium data** (coming): multi-country company & compliance lookups
-  (Chile, Argentina, Peru, Mexico), sanctions/PEP screening, batch validation,
-  and change-monitoring webhooks
+- **Premium tools:**
+  - 🛡️ **OFAC sanctions / watchlist screening** — fuzzy name matching for KYC/AML
+  - 📋 **Bulk validation** — validate up to 10,000 IDs in one call
+  - 🇨🇱 **Chile company lookup** by RUT (name, status, activities)
+  - *coming:* Argentina/Peru/Mexico company lookups, PEP screening, webhooks
 - SLA and priority support
 
 A hosted instance already runs at `https://latam-data.fastmcp.app/mcp`
