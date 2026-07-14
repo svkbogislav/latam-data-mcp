@@ -76,6 +76,23 @@ uvx --from git+https://github.com/svkbogislav/latam-data-mcp latam-data-mcp
 
 Requires Python 3.10+. No API keys — every data source is free and public.
 
+## See it work
+
+Once connected, just ask your agent in plain language:
+
+> *"Is the Mexican CLABE `646180110400000007` valid, and which bank is it?"*
+> → ✅ valid · Banco STP · branch 180 · account …
+
+> *"Validate Brazilian CNPJ `00.000.000/0001-91` and tell me who it is."*
+> → ✅ Banco do Brasil S.A. · active · Brasília-DF
+
+> *"What's the UF and the dollar today in Chile? And convert 2,500,000 CLP to BRL."*
+
+> *"How many business days between 2026-09-01 and 2026-09-30 in Chile?"*
+> → holiday-aware working-day count (skips Fiestas Patrias)
+
+No glue code — the agent picks the right tool and calls it.
+
 ## Pro — the compliance & data tier
 
 The tools above are **free forever**. **Pro** adds the compliance and data
