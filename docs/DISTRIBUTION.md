@@ -51,7 +51,7 @@ Hi PulseMCP team,
 
 I published a server to the official MCP Registry as io.github.svkbogislav/latam-data-mcp and wanted to make sure it gets indexed. Repo: https://github.com/svkbogislav/latam-data-mcp — PyPI: latam-data-mcp.
 
-One line: 19 tools giving AI agents reliable access to Latin American data — tax-ID validation for 15 countries (RUT, CUIT, RFC, CPF/CNPJ, NIT, RUC, etc.), bank-account validation (Mexican CLABE, Argentine CBU/CVU), Brazilian PIX-key validation, plus company lookups, exchange rates, and holiday/business-day math. MIT, Python 3.10+, no API keys. I'd like to claim the listing once it appears.
+One line: 20 tools giving AI agents reliable access to Latin American data — tax-ID validation for 15 countries (RUT, CUIT, RFC, CPF/CNPJ, NIT, RUC, etc.), bank-account validation (Mexican CLABE, Argentine CBU/CVU), Brazilian PIX-key validation, plus company lookups, exchange rates, and holiday/business-day math. MIT, Python 3.10+, no API keys. I'd like to claim the listing once it appears.
 
 Thanks,
 Sebastián
@@ -78,7 +78,7 @@ Tagline:
 The Latin American data layer your AI agent is missing — tax-ID, bank-account & PIX validation, FX rates, company lookups, and holidays across 20 LatAm countries.
 
 Description:
-LatAm Data MCP gives AI agents reliable access to Latin American data that is otherwise scattered, undocumented, or Spanish-only. 19 tools, MIT-licensed, Python 3.10+, no API keys — every source is free and public, or a pure local algorithm.
+LatAm Data MCP gives AI agents reliable access to Latin American data that is otherwise scattered, undocumented, or Spanish-only. 20 tools, MIT-licensed, Python 3.10+, no API keys — every source is free and public, or a pure local algorithm.
 
 Built for fintech, e-commerce, logistics and compliance agents:
 • validate_tax_id — real check-digit math for 15 countries: Chile RUT, Argentina CUIT/CUIL, Mexico RFC, Brazil CPF/CNPJ (incl. the 2026 alphanumeric CNPJ), Colombia NIT, Peru RUC, Uruguay RUT, Ecuador cédula/RUC, Paraguay RUC, Venezuela RIF, Guatemala NIT, Dominican Rep. RNC, Panama RUC+DV, Costa Rica cédula, Bolivia NIT. Returns canonical formatting and person/company/public-entity detection.
@@ -123,7 +123,7 @@ I got tired of re-solving this, so I packaged it as an MCP server. It's free, op
 
 **Plus the boring-but-useful stuff:** Brazilian company lookup by CNPJ (full federal registry), Costa Rica taxpayer + compliance status (moroso/omiso) for KYC, Chile indicators (UF/UTM), Argentina official vs blue rate, Brazil SELIC/CDI/IPCA + historical series, Colombia TRM + history, currency conversion, all 18 LatAm currencies in one call, and holiday-aware business-day math for 20 countries.
 
-**19 tools total.** The validators have 300+ tests and I checked the algorithms against real published accounts (e.g. bank CLABEs) and against python-stdnum where they overlap (0 disagreements across the countries both cover).
+**20 tools total.** The validators have 300+ tests and I checked the algorithms against real published accounts (e.g. bank CLABEs) and against python-stdnum where they overlap (0 disagreements across the countries both cover).
 
 Install is one line:
 ```
@@ -163,7 +163,7 @@ https://github.com/svkbogislav/latam-data-mcp
 FIRST COMMENT (post as a reply to your own submission):
 Hi HN. I'm a solo dev in Chile. I kept hitting the same wall building agents that touch Latin America: the reference data you need — tax-ID check digits, interbank account formats, the legally-binding exchange rates — is scattered across government sites, badly documented, and mostly Spanish-only. So I packaged it as an MCP server.
 
-It's 19 tools, MIT-licensed, Python 3.10+, and needs no API keys — every source is either a free public API (BrasilAPI, Banco Central do Brasil, datos.gov.co, Costa Rica's Hacienda, Nager.Date, etc.) or a pure local algorithm.
+It's 20 tools, MIT-licensed, Python 3.10+, and needs no API keys — every source is either a free public API (BrasilAPI, Banco Central do Brasil, datos.gov.co, Costa Rica's Hacienda, Nager.Date, etc.) or a pure local algorithm.
 
 The parts I couldn't find anywhere else:
 
@@ -195,7 +195,7 @@ Construí algo que me hubiera ahorrado semanas de trabajo, y lo dejé gratis y o
 
 Si has desarrollado un agente de IA que opera en Latinoamérica —fintech, e-commerce, logística, compliance— probablemente conoces el dolor: los datos que necesitas están dispersos en sitios de gobierno, mal documentados y casi siempre solo en español. Validar una CLABE mexicana, un CBU argentino o un CNPJ brasileño significa buscar tú mismo el algoritmo del dígito verificador. Obtener la TRM oficial de Colombia o el dólar blue de Argentina significa scrapear.
 
-Empaqueté todo eso como un servidor MCP: LatAm Data MCP. 19 herramientas, licencia MIT, sin API keys —cada fuente es una API pública gratuita o un algoritmo local.
+Empaqueté todo eso como un servidor MCP: LatAm Data MCP. 20 herramientas, licencia MIT, sin API keys —cada fuente es una API pública gratuita o un algoritmo local.
 
 Lo que más me importa (lo difícil de encontrar):
 
@@ -238,7 +238,7 @@ The fintech tools I couldn't find anywhere else:
 • validate_pix_key — Brazilian PIX keys
 
 3/
-Plus: Brazilian company lookup by CNPJ, Costa Rica compliance status (moroso/omiso) for KYC, Argentina official vs blue rate, Colombia's TRM, Chile UF/UTM, currency conversion, and holiday-aware business-day math for 20 countries. 19 tools total.
+Plus: Brazilian company lookup by CNPJ, Costa Rica compliance status (moroso/omiso) for KYC, Argentina official vs blue rate, Colombia's TRM, Chile UF/UTM, currency conversion, and holiday-aware business-day math for 20 countries. 20 tools total.
 
 Validators: 300+ tests, checked vs real accounts.
 
