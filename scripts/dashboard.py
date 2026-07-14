@@ -145,7 +145,7 @@ def delta(hist, key):
     return f'<span class="d {cls}">{sign}{d}</span>'
 
 
-def render(snap: dict, hist: list[dict]) -> str:
+def render(snap: dict, hist: list[dict], refresh: int = 1800) -> str:
     logo_b64 = base64.b64encode(LOGO.read_bytes()).decode() if LOGO.exists() else ""
     stars_hist = [h.get("stars") for h in hist]
     dl_hist = [h.get("pypi_week") for h in hist]
@@ -180,6 +180,7 @@ def render(snap: dict, hist: list[dict]) -> str:
 
     return f"""<!doctype html><html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="{refresh}">
 <title>LatAm Data MCP — Dashboard</title>
 <style>
 *{{margin:0;padding:0;box-sizing:border-box}}
@@ -228,7 +229,7 @@ td:nth-child(2),td:nth-child(3),th:nth-child(2),th:nth-child(3){{text-align:righ
   {'<img src="data:image/png;base64,'+logo_b64+'">' if logo_b64 else ''}
   <div><h1>LatAm Data <span>MCP</span> · Dashboard</h1></div>
 </div>
-<div class="ts">Actualizado: {snap['ts']} · {len(hist)} día(s) de historial</div>
+<div class="ts">{'🟢 EN VIVO · refresca cada ' + str(refresh) + 's · ' if refresh < 300 else 'Actualizado: '}{snap['ts']} · {len(hist)} día(s) de historial</div>
 
 <div class="grid">
   {card("⭐ Stars", str(snap['stars']) + delta(hist,'stars'), "personas a las que les importó", accent=True)}
