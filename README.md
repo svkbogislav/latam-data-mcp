@@ -91,7 +91,11 @@ their own instance, a **managed hosted tier** is in the works:
 A hosted instance already runs at `https://latam-data.fastmcp.app/mcp`
 (Streamable HTTP, authenticated).
 
-**Want early access or a specific data source?**
+### 💳 Pro — $19.99/mo
+
+**[→ Subscribe to Pro](https://latam-data-mcp.lemonsqueezy.com/checkout/buy/f75c3532-a919-4cab-a121-a9278066fe4e)** · managed hosted access, higher limits, and premium data as it ships.
+
+**Want early access or a specific data source first?**
 [Open an issue](https://github.com/svkbogislav/latam-data-mcp/issues/new) — tell me
 your use case and which country/data you need.
 
