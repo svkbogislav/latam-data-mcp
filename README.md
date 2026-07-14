@@ -76,11 +76,24 @@ uvx --from git+https://github.com/svkbogislav/latam-data-mcp latam-data-mcp
 
 Requires Python 3.10+. No API keys — every data source is free and public.
 
-## Hosted (managed) endpoint
+## Hosted / Pro (early access)
 
-A always-on hosted instance is available at `https://latam-data.fastmcp.app/mcp`
-(Streamable HTTP, authenticated). Use this if you'd rather not run anything
-locally.
+Self-hosting is **free forever**. For teams that would rather not run and maintain
+their own instance, a **managed hosted tier** is in the works:
+
+- Always-on hosted endpoint — no self-hosting or ops
+- Higher rate limits, caching and upstream failover
+- **Premium data** (coming): multi-country company & compliance lookups
+  (Chile, Argentina, Peru, Mexico), sanctions/PEP screening, batch validation,
+  and change-monitoring webhooks
+- SLA and priority support
+
+A hosted instance already runs at `https://latam-data.fastmcp.app/mcp`
+(Streamable HTTP, authenticated).
+
+**Want early access or a specific data source?**
+[Open an issue](https://github.com/svkbogislav/latam-data-mcp/issues/new) — tell me
+your use case and which country/data you need.
 
 ## Develop
 
