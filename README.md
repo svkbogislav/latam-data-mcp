@@ -76,30 +76,27 @@ uvx --from git+https://github.com/svkbogislav/latam-data-mcp latam-data-mcp
 
 Requires Python 3.10+. No API keys — every data source is free and public.
 
-## Hosted / Pro (early access)
+## Pro — the compliance & data tier
 
-Self-hosting is **free forever**. For teams that would rather not run and maintain
-their own instance, a **managed hosted tier** is in the works:
+The tools above are **free forever**. **Pro** adds the compliance and data
+features teams actually pay for — the stuff you can't get from a free public API:
 
-- Always-on hosted endpoint — no self-hosting or ops
-- Higher rate limits, caching and upstream failover
-- **Premium tools:**
-  - 🛡️ **OFAC sanctions / watchlist screening** — fuzzy name matching for KYC/AML
-  - 📋 **Bulk validation** — validate up to 10,000 IDs in one call
-  - 🇨🇱 **Chile company lookup** by RUT (name, status, activities)
-  - *coming:* Argentina/Peru/Mexico company lookups, PEP screening, webhooks
-- SLA and priority support
+- 🛡️ **OFAC sanctions / watchlist screening** — fuzzy name matching (catches
+  aliases, reordered names, accents) for KYC/AML onboarding
+- 🏢 **Company lookup by tax ID** — 🇨🇱 Chile today; 🇦🇷 Argentina, 🇵🇪 Peru,
+  🇲🇽 Mexico coming — name, status, activities, compliance flags
+- 📋 **Bulk validation** — validate up to 10,000 IDs in one call, for onboarding
+  pipelines and CRM cleanups
+- *coming:* PEP screening, change-monitoring webhooks, extended historical data
 
-A hosted instance already runs at `https://latam-data.fastmcp.app/mcp`
-(Streamable HTTP, authenticated).
+Delivered as a managed, always-on hosted endpoint (no self-hosting), with higher
+rate limits and priority support.
 
-### 💳 Pro — $19.99/mo
+### 💳 $19.99/mo — [→ Subscribe to Pro](https://latam-data-mcp.lemonsqueezy.com/checkout/buy/f75c3532-a919-4cab-a121-a9278066fe4e)
 
-**[→ Subscribe to Pro](https://latam-data-mcp.lemonsqueezy.com/checkout/buy/f75c3532-a919-4cab-a121-a9278066fe4e)** · managed hosted access, higher limits, and premium data as it ships.
-
-**Want early access or a specific data source first?**
+**Building for a team, or need a specific country/data source first?**
 [Open an issue](https://github.com/svkbogislav/latam-data-mcp/issues/new) — tell me
-your use case and which country/data you need.
+your use case and I'll get you early access.
 
 ## Develop
 
