@@ -5,3 +5,4 @@ dist/
 build/
 *.egg-info/
 assets/social-preview@2x.png
+assets/banner@2x.png

@@ -1,12 +1,10 @@
 <p align="center">
-  <img src="assets/logo.png" alt="LatAm Data MCP" width="128" height="128" />
+  <img src="https://raw.githubusercontent.com/svkbogislav/latam-data-mcp/main/assets/banner.png" alt="LatAm Data MCP — the Latin American data layer your AI agent is missing" />
 </p>
-
-<h1 align="center">LatAm Data MCP</h1>
 
 <!-- mcp-name: io.github.svkbogislav/latam-data-mcp -->
 
-<p align="center">The Latin American data layer your AI agent is missing.</p>
+# LatAm Data MCP
 
 An MCP server that gives agents reliable access to LatAm data that is
 otherwise scattered, undocumented, or Spanish-only: tax-ID validation
