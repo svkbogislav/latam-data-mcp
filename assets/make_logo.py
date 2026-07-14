@@ -42,10 +42,10 @@ fg = Image.new("RGBA", (N, N), (0, 0, 0, 0))
 d = ImageDraw.Draw(fg)
 
 cx = N // 2
-pin_top = int(N * 0.20)
-pin_r = int(N * 0.185)          # radius of the pin's circular head
+pin_top = int(N * 0.255)
+pin_r = int(N * 0.158)          # radius of the pin's circular head (more padding)
 head_cy = pin_top + pin_r
-tip_y = int(N * 0.80)
+tip_y = int(N * 0.735)
 
 # pin head (circle)
 d.ellipse([cx - pin_r, head_cy - pin_r, cx + pin_r, head_cy + pin_r], fill=WHITE)
