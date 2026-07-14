@@ -51,30 +51,40 @@ company lookups, holidays, and business-day math.
 
 ## Install (free — runs on your machine)
 
-No download or clone needed. Add this to your MCP client config — `uvx`
-fetches and runs the server straight from this repo:
+No signup, no API keys. Two steps:
 
-**Claude Desktop / Cursor / Claude Code** (`mcpServers` block):
+**1. Install `uv`** (the runner) if you don't already have it:
+
+```bash
+brew install uv                              # macOS
+# or, any platform:
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+**2. Add the server to your MCP client config** (`mcpServers` block):
 
 ```json
 {
   "mcpServers": {
     "latam-data": {
       "command": "uvx",
-      "args": ["--from", "git+https://github.com/svkbogislav/latam-data-mcp", "latam-data-mcp"]
+      "args": ["latam-data-mcp"]
     }
   }
 }
 ```
 
-Or install it as a command:
+- **Claude Desktop:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+  (macOS) — then quit and reopen the app.
+- **Cursor / Claude Code / other clients:** same `mcpServers` block, in their config.
 
-```bash
-uvx --from git+https://github.com/svkbogislav/latam-data-mcp latam-data-mcp
-# or:  pipx install git+https://github.com/svkbogislav/latam-data-mcp
-```
+Then just ask your agent *"Is Chilean RUT 60.910.000-1 valid?"* — done. Requires
+Python 3.10+ (uv handles it).
 
-Requires Python 3.10+. No API keys — every data source is free and public.
+> **macOS gotcha:** if the server doesn't show up, use the **full path** to uvx as
+> the `command` (run `which uvx` → e.g. `/opt/homebrew/bin/uvx`). GUI apps don't
+> always inherit your shell's PATH. First launch takes a few seconds while uv
+> fetches the package; instant after that.
 
 ## See it work
 
